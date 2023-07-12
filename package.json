@@ -1,0 +1,50 @@
+{
+  "name": "sandwich-uniswap-v3",
+  "version": "0.0.1",
+  "description": "Uniswap v3 sandwich",
+  "main": "index.js",
+  "repository": "git@github.com:VVPCybridge/sandwich-uniswap-v3.git",
+  "author": "VVPCybridge <volodymyr.popovichenko@cybridge.io>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "npx nodemon",
+    "build": "rimraf ./build && tsc",
+    "start": "node build/index.js",
+    "lint:fix": "eslint --quiet --fix \"src/**/*.{ts,js}\"",
+    "format:prettier": "prettier --write 'src/**/*.{js,ts,md}' ",
+    "typecheck": "tsc -p ./tsconfig.json --noEmit",
+    "lint:staged": "lint-staged --relative"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.6.6",
+    "@types/node": "^20.4.1",
+    "nodemon": "^3.0.1",
+    "rimraf": "^5.0.1",
+    "ts-node": "^10.9.1",
+    "tsc-files": "^1.1.4",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "@types/config": "^3.3.0",
+    "@typescript-eslint/eslint-plugin": "^5.47.0",
+    "@typescript-eslint/parser": "^5.47.0",
+    "@uniswap/v3-sdk": "^3.9.0",
+    "commitlint-config-jira": "^1.6.4",
+    "commitlint-plugin-jira-rules": "^1.6.4",
+    "config": "^3.3.9",
+    "dotenv": "^16.3.1",
+    "eslint": "^8.30.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-security": "^1.5.0",
+    "ethers": "^6.6.3",
+    "husky": "^8.0.2",
+    "lint-staged": "^13.1.0",
+    "pino": "^8.14.1",
+    "pino-pretty": "^10.0.1",
+    "prettier": "^2.8.1"
+  }
+}

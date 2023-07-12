@@ -1,0 +1,4 @@
+{
+  "src/**/*.(ts)": [ "yarn format:prettier", "yarn lint:fix", "yarn tsc-files"]
+
+}
