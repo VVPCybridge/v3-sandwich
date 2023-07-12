@@ -1,4 +1,4 @@
 {
-  "src/**/*.(ts)": [ "yarn format:prettier", "yarn lint:fix", "yarn tsc-files"]
+  "src/**/*.(ts)": [ "pnpm format:prettier", "pnpm lint:fix", "pnpm tsc-files"]
 
 }

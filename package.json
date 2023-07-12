@@ -9,8 +9,8 @@
   "private": true,
   "scripts": {
     "dev": "npx nodemon",
-    "build": "rimraf ./build && tsc",
-    "start": "node build/index.js",
+    "build": "rimraf ./build && tsc && tsc-alias",
+    "start": "node dist/index.js",
     "lint:fix": "eslint --quiet --fix \"src/**/*.{ts,js}\"",
     "format:prettier": "prettier --write 'src/**/*.{js,ts,md}' ",
     "typecheck": "tsc -p ./tsconfig.json --noEmit",
@@ -22,6 +22,7 @@
     "nodemon": "^3.0.1",
     "rimraf": "^5.0.1",
     "ts-node": "^10.9.1",
+    "tsc-alias": "^1.8.7",
     "tsc-files": "^1.1.4",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.1.6"
