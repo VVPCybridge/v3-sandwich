@@ -8,17 +8,20 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "npx nodemon",
+    "dev": "cross-env NODE_ENV=development npx nodemon",
     "build": "rimraf ./build && tsc && tsc-alias",
-    "start": "node dist/index.js",
+    "start": "cross-env NODE_ENV=production node dist/index.js",
     "lint:fix": "eslint --quiet --fix \"src/**/*.{ts,js}\"",
     "format:prettier": "prettier --write 'src/**/*.{js,ts,md}' ",
     "typecheck": "tsc -p ./tsconfig.json --noEmit",
-    "lint:staged": "lint-staged --relative"
+    "lint:staged": "lint-staged --relative",
+    "predev": "dotenv-checker --schema .env.schema --env .env.local"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.6.6",
     "@types/node": "^20.4.1",
+    "cross-env": "^7.0.3",
+    "dotenv-checker": "^1.1.5",
     "nodemon": "^3.0.1",
     "rimraf": "^5.0.1",
     "ts-node": "^10.9.1",

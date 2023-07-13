@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { config } from '@common/config';
+
+import { App } from '@app/app';
 import { logger } from './common';
 
 const bootstrap = async () => {
@@ -10,8 +11,13 @@ const bootstrap = async () => {
   process.on('uncaughtException', (error: Error, source: any) => {
     logger.error(error, source);
   });
-  logger.info(config.nodeEnv);
-  process.stdin.resume();
-};
 
+  try {
+    const app = new App();
+    await app.init();
+    app.run();
+  } catch (err: any) {
+    logger.error(err, '[Bootstrap] init error');
+  }
+};
 bootstrap();
