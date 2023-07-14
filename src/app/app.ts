@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { config } from '@common/config';
 import { logger } from '@common/utils';
-import { WebSocketProvider } from 'ethers';
+import { WebSocketProvider, JsonRpcProvider } from 'ethers';
 
 const {
   uniswapV3,
@@ -10,26 +10,26 @@ const {
 
 export class App {
   constructor(
-    private provider: WebSocketProvider = new WebSocketProvider(rpcUrl.wss, chainId),
-    private matchAddresses: string[] = [uniswapV3.swapRouter, uniswapV3.swapRouter02],
+    private providerWSS: WebSocketProvider = new WebSocketProvider(rpcUrl.wss, chainId),
+    private providerHTTPS: JsonRpcProvider = new JsonRpcProvider(rpcUrl.https, chainId),
+    private matchAddresses: string[] = [
+      uniswapV3.swapRouter.toLowerCase(),
+      uniswapV3.swapRouter02.toLowerCase(),
+      uniswapV3.universeRouter.toLowerCase(),
+    ],
   ) {}
 
-  async init() {
-    const network = await this.provider.getNetwork();
-    logger.info('[App] connect to network ' + network.name);
-  }
-
   async run() {
-    this.provider.on('pending', this.transactionHandler);
+    this.providerWSS.on('pending', this.transactionHandler);
   }
 
   private transactionHandler = async (txHash: string) => {
     logger.info(`[App] Transaction ${txHash} on pending`);
 
-    const tx = await this.provider.getTransaction(txHash);
-    if (!tx || !tx.to || tx.isMined()) return;
+    const tx = await this.providerWSS.getTransaction(txHash);
+    if (!tx || !tx.to) return;
 
-    if (this.matchAddresses.includes(tx.to)) {
+    if (this.matchAddresses.includes(tx.to.toLowerCase())) {
       logger.info(`Transaction ${tx.hash} can be used on Uniswap V3`);
     }
   };

@@ -13,6 +13,7 @@ export interface IConfig {
   uniswapV3: {
     swapRouter: string;
     swapRouter02: string;
+    universeRouter: string;
   };
 }
 export const config: IConfig = {

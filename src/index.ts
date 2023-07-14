@@ -14,7 +14,6 @@ const bootstrap = async () => {
 
   try {
     const app = new App();
-    await app.init();
     app.run();
   } catch (err: any) {
     logger.error(err, '[Bootstrap] init error');
