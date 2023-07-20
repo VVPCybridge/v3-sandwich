@@ -1,4 +1,4 @@
-export const routerV3Abi = [
+export const V3_ROUTER_ABI = [
   {
     inputs: [
       { internalType: 'address', name: '_factory', type: 'address' },
