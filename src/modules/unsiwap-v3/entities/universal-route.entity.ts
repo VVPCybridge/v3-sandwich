@@ -1,9 +1,9 @@
 import { InterfaceAbi, TransactionResponse } from 'ethers';
 import { SwapEntity } from './swap.entity';
 
-export type TUniversalRoteCommand = Record<string, { name: string; input: string[]; names: string[] }>;
+export type TUniversalRouteCommand = Record<string, { name: string; input: string[]; names: string[] }>;
 export class UniversalRoute extends SwapEntity {
-  readonly commands: TUniversalRoteCommand = {
+  readonly commands: TUniversalRouteCommand = {
     '00': {
       name: 'V3_SWAP_EXACT_IN',
       input: ['address', 'uint256', 'uint256', 'bytes', 'bool'],
