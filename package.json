@@ -9,6 +9,7 @@
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development npx nodemon",
+    "dev:prod": "cross-env NODE_ENV=production npx nodemon",
     "build": "rimraf ./build && tsc && tsc-alias",
     "start": "cross-env NODE_ENV=production node dist/index.js",
     "lint:fix": "eslint --quiet --fix \"src/**/*.{ts,js}\"",

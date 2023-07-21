@@ -14,4 +14,5 @@ export const WETH_ABI = ['function deposit() payable', 'function withdraw(uint w
 // UNIVERSAL ROUTE UNISWAP EXECUTE
 export const UNIVERSAL_ROUTE_ABI = [
   'function execute(bytes calldata commands, bytes[] calldata inputs, uint256 deadline)',
+  'function WRAP_ETH(address calldata recipient, uint256 calldata amountMin)',
 ];

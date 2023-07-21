@@ -33,6 +33,7 @@ export class App {
 
   async run() {
     this.providerWSS.on('pending', this.trnHandler);
+    // this.trnHandler('0xb06b0f485274f8b9bb39943d9842d0adc7ad3103e7dcc9f32340953d2307f43f');
   }
 
   private trnHandler = async (txHash: string) => {
