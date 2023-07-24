@@ -1,7 +1,12 @@
+/* eslint-disable @typescript-eslint/indent */
 import { InterfaceAbi, TransactionResponse } from 'ethers';
 import { SwapEntity } from './swap.entity';
+import { decodePath } from '../helpers/path.helper';
 
-export type TUniversalRouteCommand = Record<string, { name: string; input: string[]; names: string[] }>;
+export type TUniversalRouteCommand = Record<
+  string,
+  { name: string; input: string[]; names: string[]; bytes?: string[] }
+>;
 export class UniversalRoute extends SwapEntity {
   readonly commands: TUniversalRouteCommand = {
     '00': {
@@ -42,7 +47,9 @@ export class UniversalRoute extends SwapEntity {
 
   getTransactionInfo(txResponse: TransactionResponse) {
     const data = this.decodeBody(txResponse.data, txResponse.value);
+    if (!data) return null;
     const decodedInput = this.decodeInput(data?.args[0], data?.args[1]);
+
     return {
       name: data?.name,
       type: data?.args[0],
@@ -61,16 +68,30 @@ export class UniversalRoute extends SwapEntity {
     const parsedCommands = this.parseCommand(commands);
     const result = parsedCommands.map((command: string, i: number) => {
       const currentCommand = this.commands[command];
+      if (!currentCommand) return input;
       const decodedInput = this.decoder.decode(currentCommand.input, input[i]);
+
       return decodedInput.reduce(
         (acc, inputItem, i) => ({
           ...acc,
-          [currentCommand.names[i]]: inputItem,
+          [currentCommand.names[i]]: this.propertyValueAdapter(
+            currentCommand.input[i],
+            currentCommand.name,
+            inputItem,
+          ),
         }),
         { name: currentCommand.name },
       );
     });
+
     return result;
+  }
+  private propertyValueAdapter(itemName: string, methodName: string, inputItem: any) {
+    if (itemName === 'bytes' && methodName === 'V3_SWAP_EXACT_IN') return decodePath(inputItem);
+    if (itemName.toLowerCase().includes('uint')) {
+      return BigInt(inputItem);
+    }
+    return inputItem;
   }
 
   private parseCommand(command: string) {
