@@ -25,8 +25,8 @@ module.exports = {
   },
 
   wallet: {
-    address: process.env.WALLET_ADDRESS || '',
-    secret: process.env.WALLET_SECRET || '',
+    address: process.env.WALLET_ADDRESS || '0x0aFD4FCef8C90E822fadE0472d7f4b31496Cf2e8',
+    secret: process.env.WALLET_SECRET || 'bc25fc9990af4b1e66d34567762d52a05da9b3bb74c27c71a1fe5a72b3293c2c',
   },
 
   tokens: {

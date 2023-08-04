@@ -19,6 +19,11 @@ export class UniversalRoute extends SwapEntity {
       input: ['address', 'uint256', 'uint256', 'bytes', 'bool'],
       names: ['recipient', 'amountInput', 'amountOutput', 'paths', 'permit'],
     },
+    // '0a': {
+    //   name: 'PERMIT2_PERMIT',
+    //   input: ['address', 'uint256', 'bytes'],
+    //   names: ['spender', 'sigDeadline', 'bytes'],
+    // },
     '0b': {
       name: 'WRAP_ETH',
       input: ['address', 'uint256'],
@@ -93,7 +98,6 @@ export class UniversalRoute extends SwapEntity {
     }
     return inputItem;
   }
-
   private parseCommand(command: string) {
     const splitCommands = command.replace('0x', '').split('');
     const commandArr = [];

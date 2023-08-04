@@ -1,24 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { config } from '@common/config';
-import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core';
+import { Currency, CurrencyAmount, Token, TradeType, Percent } from '@uniswap/sdk-core';
 import { computePoolAddress, Pool, Route, SwapQuoter, Trade } from '@uniswap/v3-sdk';
 import { JsonRpcProvider, ethers, Wallet, TransactionRequest, AbiCoder } from 'ethers';
 import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json';
 import IUniswapV3PoolABI from '@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json';
-import JSBI from 'jsbi';
 
 import { logger } from '@common/utils';
 import { fromReadableAmount } from '../helpers';
 import { FEED_AMOUNT } from '../constants';
 import { ERC20_ABI } from '../abi';
 
+export const NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS = '0xC36442b4a4522E871399CD717aBDD847Ab11FE88';
+
 interface IPoolInfo {
   token0: string;
   token1: string;
   fee: number;
   tickSpacing: number;
-  sqrtPriceX96: typeof BigInt;
-  liquidity: typeof BigInt;
+  sqrtPriceX96: bigint;
+  liquidity: bigint;
   tick: number;
 }
 
@@ -66,31 +67,33 @@ export class CoreService {
       token1,
       fee,
       tickSpacing,
-      liquidity,
-      sqrtPriceX96: slot0[0],
+      liquidity: BigInt(liquidity),
+      sqrtPriceX96: BigInt(slot0[0]),
       tick: slot0[1],
     };
   }
 
   async getOutputQuoteAhead(tokenIn: Token, tokenOut: Token, amountIn: number): Promise<number> {
-    const quoterContract: any = new ethers.Contract(quoterContractAddress, Quoter.abi, this.provider);
+    const quoterContract = new ethers.Contract(quoterContractAddress, Quoter.abi, this.provider);
 
-    const quotedAmountOut = await quoterContract.callStatic.quoteExactInputSingle(
+    const quotedAmountOut = await quoterContract.quoteExactInputSingle.staticCall(
       tokenIn.address,
       tokenOut.address,
       FEED_AMOUNT,
       fromReadableAmount(amountIn, tokenIn.decimals).toString(),
+      0,
     );
     return quotedAmountOut;
   }
 
+  // TODO rewrite qouter
   async getOutputQuote(route: Route<Currency, Currency>, tokenIn: Token, amount: number) {
-    const { calldata } = await SwapQuoter.quoteCallParameters(
+    const { calldata } = SwapQuoter.quoteCallParameters(
       route,
       CurrencyAmount.fromRawAmount(tokenIn, fromReadableAmount(amount, tokenIn.decimals).toString()),
       TradeType.EXACT_INPUT,
       {
-        useQuoterV2: true,
+        useQuoterV2: false,
       },
     );
 
@@ -147,8 +150,10 @@ export class CoreService {
     }
   }
 
-  async createTrade(tokenIn: Token, tokenOut: Token, amount: number) {
+  async createTrade(tokenIn: Token, tokenOut: Token, amount: any) {
     const poolInfo = await this.getPoolInfo(tokenIn, tokenOut);
+
+    console.log(poolInfo.sqrtPriceX96);
 
     const pool = new Pool(
       tokenIn,
@@ -156,7 +161,7 @@ export class CoreService {
       FEED_AMOUNT,
       poolInfo.sqrtPriceX96.toString(),
       poolInfo.liquidity.toString(),
-      poolInfo.tick,
+      +poolInfo.tick.toString(),
     );
 
     const swapRoute = new Route([pool], tokenIn, tokenOut);
@@ -169,10 +174,16 @@ export class CoreService {
         tokenIn,
         fromReadableAmount(amount, tokenIn.decimals).toString(),
       ),
-      outputAmount: CurrencyAmount.fromRawAmount(tokenOut, JSBI.BigInt(amountOut) as any),
+      outputAmount: CurrencyAmount.fromRawAmount(tokenOut, +amountOut),
       tradeType: TradeType.EXACT_INPUT,
     });
 
-    return uncheckedTrade;
+    const slippageTolerance = new Percent('5', 1000);
+    console.log(slippageTolerance.toFixed());
+
+    return {
+      trade: uncheckedTrade,
+      amountOutMi: uncheckedTrade.minimumAmountOut(slippageTolerance).toFixed(),
+    };
   }
 }

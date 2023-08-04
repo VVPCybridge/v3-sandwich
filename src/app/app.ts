@@ -5,6 +5,8 @@ import { V3_ROUTER_ABI, UNIVERSAL_ROUTE_ABI, V3_02_ROUTER_ABI } from '@modules/u
 
 import { logger } from '@common/utils';
 import { config } from '@common/config';
+import { CoreService } from '@modules/unsiwap-v3/services/core.service';
+import { DAI_TOKEN, WETH_TOKEN } from '@modules/unsiwap-v3/constants';
 
 const {
   uniswapV3,
@@ -13,6 +15,7 @@ const {
 
 export class App {
   readonly matcher: Record<string, SwapEntity>;
+  v3CoreService: CoreService;
   constructor(
     private providerWSS: WebSocketProvider = new WebSocketProvider(rpcUrl.wss, chainId),
     private providerHTTPS: JsonRpcProvider = new JsonRpcProvider(rpcUrl.https, chainId),
@@ -29,6 +32,15 @@ export class App {
       [uniswapV3.swapRouter.toLowerCase()]: new V3Route(uniswapV3.swapRouter, V3_ROUTER_ABI),
       [uniswapV3.swapRouter02.toLowerCase()]: new V3Route(uniswapV3.swapRouter02, V3_02_ROUTER_ABI),
     };
+
+    this.v3CoreService = new CoreService(this.providerHTTPS);
+  }
+
+  async calculateTrade() {
+    const [tokenIn, tokenOut, amount] = [WETH_TOKEN, DAI_TOKEN, 100];
+
+    const trade = await this.v3CoreService.createTrade(tokenIn, tokenOut, amount);
+    console.log('minAmount', trade.amountOutMi);
   }
 
   async run() {

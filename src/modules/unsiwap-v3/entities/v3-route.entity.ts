@@ -27,7 +27,7 @@ export class V3Route extends SwapEntity {
       case 'multicall':
         return {
           ...resultData,
-          input: this.decodeInput(data.args[1]),
+          input: this.decodeMultiCallInput(data.args[1]),
           deadLine: data?.args[0],
         };
 
@@ -43,7 +43,7 @@ export class V3Route extends SwapEntity {
     }
   }
 
-  private decodeInput(calls: string[]) {
+  private decodeMultiCallInput(calls: string[]) {
     return calls.map((call) => {
       try {
         const func = call.slice(0, 10);

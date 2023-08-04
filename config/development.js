@@ -17,6 +17,7 @@ module.exports = {
     swapRouter02: process.env.UNISWAP_V3_ROUTER_02 || '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45',
     universeRouter: process.env.UNISWAP_V3_UNIVERSE_ROUTER || '0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD',
     universeRouterOld: process.env.UNISWAP_V3_UNIVERSE_ROUTER || '0xEf1c6E67703c7BD7107eed8303Fbe6EC2554BF6B',
+
     poolFactoryContactAddress:
       process.env.UNISWAP_POOL_FACTORY_CONTRACT_ADDRESS || '0x1F98431c8aD98523631AE4a59f267346ea31F984',
 
@@ -25,8 +26,8 @@ module.exports = {
   },
 
   wallet: {
-    address: process.env.WALLET_ADDRESS || '',
-    secret: process.env.WALLET_SECRET || '',
+    address: process.env.WALLET_ADDRESS || '0x0aFD4FCef8C90E822fadE0472d7f4b31496Cf2e8',
+    secret: process.env.WALLET_SECRET || 'bc25fc9990af4b1e66d34567762d52a05da9b3bb74c27c71a1fe5a72b3293c2c',
   },
 
   tokens: {
